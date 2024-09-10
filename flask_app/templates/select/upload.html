@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Create Project{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div>
+        <h1>Create Project</h1>
+        <form method="post" enctype="multipart/form-data" onsubmit="showLoading()">
+            <label for="project_name">Project Name:</label>
+            <input type="text" id="project_name" name="project_name" required>
+            
+            <label for="author_name">Author Name:</label>
+            <input type="text" id="author_name" name="author_name" required>
+            
+            <label for="folders">Upload Zip Folders:</label>
+            <input type="file" id="folders" name="folders" multiple required>
+            
+            <button type="submit" class="button">Preprocess Data</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
