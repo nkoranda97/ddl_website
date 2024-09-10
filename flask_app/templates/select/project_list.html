@@ -17,7 +17,7 @@
     <tbody>
         {% for project in projects %}
         <tr>
-            <td><a href="{{ url_for('select.project_list', project_id=project['project_id']) }}">{{ project['project_name'] }}</a></td>
+            <td><a href="{{ url_for('analyze.workspace', project_id=project['project_id']) }}">{{ project['project_name'] }}</a></td>
             <td>{{ project['project_author'] }}</td>
             <td>{{ project['creation_date'] }}</td>
             <td>
@@ -30,3 +30,4 @@
     </tbody>
 </table>
 {% endblock %}
+

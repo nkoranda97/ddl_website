@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Workspace{% endblock %}
+
+{% block content %}
+<h1>Workspace for {{ project['project_name'] }}</h1>
+<p><strong>Author:</strong> {{ project['project_author'] }}</p>
+<p><strong>Creation Date:</strong> {{ project['creation_date'] }}</p>
+<p><strong>Directory Path:</strong> {{ project['directory_path'] }}</p>
+<p><strong>VDJ Path:</strong> {{ project['vdj_path'] }}</p>
+<p><strong>ADATA Path:</strong> {{ project['adata_path'] }}</p>
+
+<!-- Add more content here as you build out the workspace functionality -->
+
+{% endblock %}

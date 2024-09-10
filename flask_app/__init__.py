@@ -35,4 +35,7 @@ def create_app(test_config = None):
     from . import select
     app.register_blueprint(select.bp)
     
+    from . import analyze
+    app.register_blueprint(analyze.bp)
+    
     return app
