@@ -99,11 +99,9 @@ def delete_project(project_id):
     
     directory_path = project['directory_path']
     
-    # Delete the project folder
     if os.path.exists(directory_path):
         shutil.rmtree(directory_path)
     
-    # Delete the project from the database
     db.execute('DELETE FROM projects WHERE project_id = ?', (project_id,))
     db.commit()
     
