@@ -2,6 +2,7 @@ import functools
 from datetime import date
 import os
 import zipfile
+import shutil
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
@@ -81,4 +82,31 @@ def upload():
 
 @bp.route('/project_list')
 def project_list():
-    return render_template('select/project_list.html')
+    db = get_db()
+    projects = db.execute(
+        'SELECT project_id, project_name, project_author, creation_date FROM projects'
+    ).fetchall()
+    return render_template('select/project_list.html', projects = projects)
+
+@bp.route('/delete_project/<int:project_id>', methods=['POST'])
+def delete_project(project_id):
+    db = get_db()
+    project = db.execute('SELECT directory_path FROM projects WHERE project_id = ?', (project_id,)).fetchone()
+    
+    if project is None:
+        flash('Project not found.')
+        return redirect(url_for('select.project_list'))
+    
+    directory_path = project['directory_path']
+    
+    # Delete the project folder
+    if os.path.exists(directory_path):
+        shutil.rmtree(directory_path)
+    
+    # Delete the project from the database
+    db.execute('DELETE FROM projects WHERE project_id = ?', (project_id,))
+    db.commit()
+    
+    flash('Project deleted successfully.')
+    return redirect(url_for('select.project_list'))
+

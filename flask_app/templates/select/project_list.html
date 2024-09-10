@@ -5,7 +5,28 @@
 {% block content %}
 <h1>Projects</h1>
 <p>Select a Project:</p>
-<div>
-    testing
-</div>
+<table>
+    <thead>
+        <tr>
+            <th>Project Name</th>
+            <th>Author</th>
+            <th>Creation Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for project in projects %}
+        <tr>
+            <td><a href="{{ url_for('select.project_list', project_id=project['project_id']) }}">{{ project['project_name'] }}</a></td>
+            <td>{{ project['project_author'] }}</td>
+            <td>{{ project['creation_date'] }}</td>
+            <td>
+                <form action="{{ url_for('select.delete_project', project_id=project['project_id']) }}" method="post" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}
