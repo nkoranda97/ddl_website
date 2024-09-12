@@ -8,6 +8,9 @@ from flask import session
 import dandelion as ddl
 import scanpy as sc
 
+# Global dictionary to store preprocessed data
+preprocessed_data_cache = {}
+
 def init_dashboard(server):
     """Create a Plotly Dash dashboard."""
     dash_app = dash.Dash(
@@ -18,36 +21,55 @@ def init_dashboard(server):
         ],
     )
 
-    # Define a callback to update the layout based on session data
+    def load_project_data():
+        """Load project data from session."""
+        if 'project_data' in session:
+            project_data = session['project_data']
+            vdj_path = project_data['vdj_path']
+            adata_path = project_data['adata_path']
+            vdj = ddl.read_h5ddl(vdj_path)
+            adata = sc.read(adata_path)
+            return project_data['project_name'], vdj, adata
+        return None, None, None
+
+    def preprocess_data(vdj, adata):
+        """Preprocess data."""
+        vdj, adata = ddl.pp.check_contigs(vdj, adata)
+        ddl.tl.find_clones(vdj)
+        ddl.tl.generate_network(vdj)
+        ddl.tl.clone_size(vdj)
+        df = vdj.metadata
+        df = df[df.isotype_status != 'Multi']
+        return df
+
+    def create_figure(df, chart_type):
+        """Create figure based on chart type."""
+        if chart_type == 'Bar':
+            fig = bar_graph(df, x='v_call_VDJ', color='v_call_VDJ', sort=True, title='V Call VDJ Usage')
+            fig.update_layout(showlegend=False)
+            fig.update_traces(dict(marker_line_width=0))
+        elif chart_type == 'Pie':
+            fig = px.pie(df, names='v_call_VDJ', title='V Call VDJ Usage')
+            fig.update_traces(textposition='inside', textinfo='percent+label')
+        return fig
+
     @dash_app.callback(
         Output('project-info', 'children'),
         [Input('url', 'pathname')]
     )
     def display_project_info(pathname):
-        if 'project_data' in session:
-            project_data = session['project_data']
-            project_name = project_data['project_name']
-            vdj_path = project_data['vdj_path']
-            adata_path = project_data['adata_path']
-            
-            vdj = ddl.read_h5ddl(vdj_path)
-            adata = sc.read(adata_path)
-            
-            vdj, adata = ddl.pp.check_contigs(vdj, adata)
-            ddl.tl.find_clones(vdj)
-            ddl.tl.generate_network(vdj)
-            ddl.tl.clone_size(vdj)
-            
-            df = vdj.metadata
-            df = df[df.isotype_status != 'Multi']
-            
-            # Default chart type
-            chart_type = 'Bar'
-            
-            fig_1 = create_figure(df, chart_type)
+        project_name, vdj, adata = load_project_data()
+        if vdj and adata:
+            if project_name not in preprocessed_data_cache:
+                df = preprocess_data(vdj, adata)
+                preprocessed_data_cache[project_name] = df
+            else:
+                df = preprocessed_data_cache[project_name]
+
+            fig_1 = create_figure(df, 'Bar')
             fig_2 = bar_graph(df, x='isotype_status', color='locus_status', title='Isotype Usage')
             fig_2.update_traces(dict(marker_line_width=0))
-            
+
             return html.Div([
                 html.A("Back to Projects", href="/project_list"),
                 html.H3(f"Project Name: {project_name}"),
@@ -65,33 +87,19 @@ def init_dashboard(server):
                 html.Div(id='chart-type-store', style={'display': 'none'})
             ])
         return html.Div("No project selected.")
-    
-    # Define a callback to update the chart type
+
     @dash_app.callback(
         Output('figure-1', 'figure'),
         [Input('chart-type', 'value')],
         [State('url', 'pathname')]
     )
     def update_chart(chart_type, pathname):
-        if 'project_data' in session:
-            project_data = session['project_data']
-            vdj_path = project_data['vdj_path']
-            vdj = ddl.read_h5ddl(vdj_path)
-            df = vdj.metadata
-            df = df[df.isotype_status != 'Multi']
+        project_name, _, _ = load_project_data()
+        if project_name and project_name in preprocessed_data_cache:
+            df = preprocessed_data_cache[project_name]
             return create_figure(df, chart_type)
         return {}
 
-    def create_figure(df, chart_type):
-        if chart_type == 'Bar':
-            fig = bar_graph(df, x='v_call_VDJ', color='v_call_VDJ', sort=True, title='V Call VDJ Usage')
-            fig.update_layout(showlegend=False)
-            fig.update_traces(dict(marker_line_width=0))
-        elif chart_type == 'Pie':
-            fig = px.pie(df, names='v_call_VDJ', title='V Call VDJ Usage')
-            fig.update_traces(textposition='inside', textinfo='percent+label')
-        return fig
-    
     dash_app.layout = html.Div([
         dcc.Location(id='url', refresh=False),
         html.Div(id='project-info')
