@@ -38,6 +38,7 @@ def create_app(test_config = None):
     from . import analyze
     app.register_blueprint(analyze.bp)
     
-    
+    from .plotlydash.dashboard import init_dashboard
+    app = init_dashboard(app)
     
     return app
