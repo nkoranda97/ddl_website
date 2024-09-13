@@ -1,4 +1,4 @@
 .history
 .vscode
 instance/
-flask_app/__pycache__/
+flask_app/*.pyc
