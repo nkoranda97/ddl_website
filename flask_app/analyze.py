@@ -22,7 +22,6 @@ def workspace(project_id):
     df = vdj.metadata
     
     
-
     # Create a simple scatter plot
     p1 = plot.bar(df, x = 'v_call_VDJ')
     
