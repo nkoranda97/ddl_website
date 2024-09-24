@@ -1,15 +1,46 @@
-{% extends "base.html" %}
+<!DOCTYPE html> 
+<html lang="en"> 
 
-{% block title %}Workspace{% endblock %}
+<head> 
+	<meta charset="utf-8"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1"> 
 
-{% block content %}
-<h1>Workspace for {{ project['project_name'] }}</h1>
-<p><strong>Author:</strong> {{ project['project_author'] }}</p>
-<p><strong>Creation Date:</strong> {{ project['creation_date'] }}</p>
-<p><strong>Directory Path:</strong> {{ project['directory_path'] }}</p>
-<p><strong>VDJ Path:</strong> {{ project['vdj_path'] }}</p>
-<p><strong>ADATA Path:</strong> {{ project['adata_path'] }}</p>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous"> 
 
-<!-- Add more content here as you build out the workspace functionality -->
+	<!-- <link href="http://cdn.bokeh.org/bokeh/release/bokeh-3.0.1.min.css" rel="stylesheet" type="text/css"> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bokeh/3.0.1/bokeh.min.js"
+		integrity="sha512-p7EUyPmeDeOwHiu7fIZNboAcQLxei3sWtXoHoShWWiPNUSRng/Xs5JPcaFPRa4dKy9IuHjyIQuLE4caGCwuewA=="
+		crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
 
-{% endblock %}
+	<title>Bokeh Charts</title> 
+</head> 
+
+<body> 
+
+	<div class="container"> 
+		<h1 class="text-center py-4">Responsive Chart with Bokeh, Flask and Python</h1> 
+		<div class="row mb-5"> 
+			<div class="col-md-6"> 
+				<h4 class="text-center">Scatter Plot</h4> 
+				{{ div[0] | safe }} 
+				{{ script[0] | safe }} 
+			</div> 
+			<div class="col-md-6"> 
+				<h4 class="text-center">Bar Chart</h4> 
+				{{ div[1] | safe }} 
+				{{ script[1] | safe }} 
+			</div> 
+		</div> 
+		<div class="row"> 
+			<div class="col-md-12"> 
+				<h4 class="text-center">Line Chart</h4> 
+				{{ div[2] | safe }} 
+				{{ script[2] | safe }} 
+			</div> 
+		</div> 
+	</div> 
+
+</body> 
+
+</html>

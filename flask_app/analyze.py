@@ -1,16 +1,7 @@
-from datetime import date
-import os
-import zipfile
-import shutil
-
-from flask import (
-    Blueprint, flash, redirect, render_template, request, url_for, current_app, session
-)
-   
-from werkzeug.utils import secure_filename
-
+from flask import Blueprint, render_template, session
 from flask_app.db import get_db
-from .preprocess import preprocess
+from bokeh.embed import components
+from bokeh.plotting import figure
 
 bp = Blueprint('analyze', __name__, url_prefix='/analyze')
 
@@ -28,8 +19,21 @@ def workspace(project_id):
         'project_author': project['project_author'],
         'creation_date': project['creation_date'],
         'vdj_path': project['vdj_path'],
-        'adata_path': project['adata_path']
     }
 
-    
-    return redirect('/dashapp')
+    # Create a simple scatter plot
+    p1 = figure(title="Scatter Plot")
+    p1.scatter([1, 2, 3], [4, 5, 6])
+
+    # Create a simple bar chart
+    p2 = figure(title="Bar Chart")
+    p2.vbar(x=[1, 2, 3], width=0.5, bottom=0, top=[1.5, 2.5, 3.5])
+
+    # Create a simple line chart
+    p3 = figure(title="Line Chart")
+    p3.line([1, 2, 3], [4, 5, 6])
+
+    # Get the script and div components
+    script, div = components((p1, p2, p3))
+
+    return render_template('analyze/workspace.html', script=script, div=div, project_data=session['project_data'])
