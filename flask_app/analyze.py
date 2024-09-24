@@ -26,10 +26,8 @@ def workspace(project_id):
     p1 = plot.bar(df, x = 'v_call_VDJ')
     
 
-    
     # Create a simple bar chart
-    p2 = figure(title="Bar Chart")
-    p2.vbar(x=[1, 2, 3], width=0.5, bottom=0, top=[1.5, 2.5, 3.5])
+    p2 = plot.pie(df, x = 'v_call_VDJ')
 
     # Create a simple line chart
     p3 = figure(title="Line Chart")

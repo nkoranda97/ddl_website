@@ -198,13 +198,27 @@ table {
     100% { transform: rotate(360deg); }
 }
 
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Grid Container Styling */
 .grid-container {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px; /* Adjust the gap between grid items as needed */
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  padding: 20px;
 }
 
 .grid-item {
-    border: 1px solid #ccc; /* Optional: Add a border to grid items */
-    padding: 10px; /* Optional: Add padding to grid items */
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
 }
