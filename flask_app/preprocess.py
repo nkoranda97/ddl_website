@@ -73,6 +73,13 @@ def preprocess(upload_folder, samples):
     sc.tl.umap(adata)
     
     sc.tl.leiden(adata, resolution=0.5)
+    
+    vdj, adata = ddl.pp.check_contigs(vdj, adata)
+    ddl.tl.find_clones(vdj)
+    ddl.tl.generate_network(vdj)
+    ddl.tl.clone_size(vdj)
+    
+    
     adata.write(os.path.join(upload_folder, "processed_adata.h5ad"))
     vdj.write(os.path.join(upload_folder, "processed_vdj.h5ddl"))
     

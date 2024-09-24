@@ -3,3 +3,4 @@
 instance/
 flask_app/__pycache__/
 flask_app/plotlydash/__pycache__/
+flask_app/plotting/__pycache__/

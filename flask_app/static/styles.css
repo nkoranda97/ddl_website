@@ -197,3 +197,14 @@ table {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px; /* Adjust the gap between grid items as needed */
+}
+
+.grid-item {
+    border: 1px solid #ccc; /* Optional: Add a border to grid items */
+    padding: 10px; /* Optional: Add padding to grid items */
+}

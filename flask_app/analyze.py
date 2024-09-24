@@ -2,6 +2,10 @@ from flask import Blueprint, render_template, session
 from flask_app.db import get_db
 from bokeh.embed import components
 from bokeh.plotting import figure
+from bokeh.resources import CDN
+import dandelion as ddl
+import scanpy as sc
+from .plotting import plot
 
 bp = Blueprint('analyze', __name__, url_prefix='/analyze')
 
@@ -13,18 +17,17 @@ def workspace(project_id):
         (project_id,)
     ).fetchone()
     
-    session['project_data'] = {
-        'project_id': project['project_id'],
-        'project_name': project['project_name'],
-        'project_author': project['project_author'],
-        'creation_date': project['creation_date'],
-        'vdj_path': project['vdj_path'],
-    }
+    vdj, adata = load_project(project)
+    
+    df = vdj.metadata
+    
+    
 
     # Create a simple scatter plot
-    p1 = figure(title="Scatter Plot")
-    p1.scatter([1, 2, 3], [4, 5, 6])
+    p1 = plot.bar(df, x = 'v_call_VDJ')
+    
 
+    
     # Create a simple bar chart
     p2 = figure(title="Bar Chart")
     p2.vbar(x=[1, 2, 3], width=0.5, bottom=0, top=[1.5, 2.5, 3.5])
@@ -32,8 +35,21 @@ def workspace(project_id):
     # Create a simple line chart
     p3 = figure(title="Line Chart")
     p3.line([1, 2, 3], [4, 5, 6])
+    
 
     # Get the script and div components
-    script, div = components((p1, p2, p3))
+    script, div = components([p1, p2, p3])
 
-    return render_template('analyze/workspace.html', script=script, div=div, project_data=session['project_data'])
+    return render_template('analyze/workspace.html',
+                           script=script, 
+                           div=div, 
+                           project=project,
+                           resources=CDN.render())
+
+def load_project(project):
+    vdj_path = project['vdj_path']
+    adata_path = project['adata_path']
+    vdj = ddl.read_h5ddl(vdj_path)
+    adata = sc.read(adata_path)
+    
+    return vdj, adata
