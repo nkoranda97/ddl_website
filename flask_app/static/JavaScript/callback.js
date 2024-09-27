@@ -1,4 +1,4 @@
-const selected = cb_obj.item;
+const selected = cb_obj.value;
 const data = df_dict;
 const group = {};
 

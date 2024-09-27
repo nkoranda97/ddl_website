@@ -1,4 +1,4 @@
-from bokeh.models import ColumnDataSource, HoverTool, CustomJS, Dropdown, Slider, ColorPicker, TextInput
+from bokeh.models import ColumnDataSource, HoverTool, CustomJS, Dropdown, Slider, ColorPicker, TextInput, Select
 from bokeh.plotting import figure, show
 from bokeh.layouts import column
 from bokeh.palettes import Category20
@@ -28,15 +28,16 @@ def bar(df, x):
     p.ygrid.grid_line_color = None
     p.x_range.start = 0
     
+    
     menu = [(col, col) for col in df.columns]
-    dropdown = Dropdown(label=x, button_type="warning", menu=menu)
+    dropdown = Select(title = "Variable", value = x, options=menu)
     
     with open('flask_app/static/JavaScript/callback.js', 'r') as f:
         js_code = f.read()
     
     callback = CustomJS(args=dict(source=source, p=p, df_dict=df_dict, dropdown=dropdown, hover=hover), code=js_code)
     
-    dropdown.js_on_event('menu_item_click', callback)
+    dropdown.js_on_change('value', callback)
     
     picker = ColorPicker(color = 'red')
     picker.js_link('color', hbar.glyph, 'fill_color')
