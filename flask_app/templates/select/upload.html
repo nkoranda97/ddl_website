@@ -3,23 +3,48 @@
 {% block title %}Create Project{% endblock %}
 
 {% block content %}
-        <div>
-          <h1>Create Project</h1>
-          <form method="post" enctype="multipart/form-data" onsubmit="showLoading()">
-            <label for="project_name">Project Name:</label>
-            <input type="text" id="project_name" name="project_name" placeholder="No spaces use underscore. Ex. Project_1" required>
-      
-            <label for="author_name">Author Name:</label>
-            <input type="text" id="author_name" name="author_name"required>
-      
-            <label for="folders">Upload Zip Folders:</label>
-            <input type="file" id="folders" name="folders" multiple required>
-      
-            <button type="submit" class="button">Preprocess Data</button>
-          </form>
-          <div id="loader" class="loader" style="display: none;"></div>
-          <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-          <script src="{{ url_for('static', filename='scripts.js') }}"></script>
-        </div>
+<div>
+  <h1>Create Project</h1>
+  <form method="post" enctype="multipart/form-data" onsubmit="return checkGEXAndSubmit()">
+    <label for="project_name">Project Name:</label>
+    <input type="text" id="project_name" name="project_name" placeholder="No spaces use underscore. Ex. Project_1" required>
 
+    <label for="author_name">Author Name:</label>
+    <input type="text" id="author_name" name="author_name" required>
+
+    <label for="folders">Upload Zip Folders:</label>
+    <input type="file" id="folders" name="folders" multiple required>
+
+    <label for="data_uploaded">Data Uploaded:</label>
+    <div class="radio-group">
+      <label for="VDJ">
+        <input type="radio" name="data_uploaded" id="VDJ" value="VDJ"> VDJ
+      </label><br>
+      <label for="GEX">
+        <input type="radio" name="data_uploaded" id="GEX" value="GEX"> GEX
+      </label><br>
+      <label for="Both">
+        <input type="radio" name="data_uploaded" id="Both" value="Both"> Both
+      </label><br>
+    </div>
+    <label for="species">Species:</label>
+    <div class="radio-group">
+      <label for="human">
+        <input type="radio" name="species" id="human" value="human"> Human
+      </label><br>
+      <label for="mouse">
+        <input type="radio" name="species" id="mouse" value="mouse"> Mouse
+      </label><br>
+    </div>
+
+    <div id="gex-message" class="hover-message" style="display: none;">
+      Uploading only GEX data is not supported yet.
+    </div>
+
+    <button type="submit" class="button">Preprocess Data</button>
+  </form>
+  <div id="loader" class="loader" style="display: none;"></div>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+</div>
 {% endblock %}

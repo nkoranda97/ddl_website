@@ -47,6 +47,8 @@ def load_project(project):
     vdj_path = project['vdj_path']
     adata_path = project['adata_path']
     vdj = ddl.read_h5ddl(vdj_path)
-    adata = sc.read(adata_path)
-    
-    return vdj, adata
+    if adata_path != 'NULL':
+        adata = sc.read(adata_path)
+        return vdj, adata
+    else:
+        return vdj, None

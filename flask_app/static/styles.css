@@ -222,3 +222,76 @@ table {
   justify-content: center;
   min-height: 400px;
 }
+
+.radio-group {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  color: #333;
+}
+
+.radio-group input[type="radio"] {
+  accent-color: #007bff; /* Change this to match your theme color */
+  width: 20px;
+  height: 20px;
+}
+
+.flashes {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.flashes li {
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+.flashes .error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.flashes .info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.flashes li .icon {
+  margin-right: 10px;
+  font-size: 1.5em;
+}
+
+.flashes .success .icon:before {
+  content: "✔️";
+}
+
+.flashes .error .icon:before {
+  content: "❌";
+}
+
+.flashes .info .icon:before {
+  content: "ℹ️";
+}
+
+.hover-message {
+  background-color: #d1ecf1;
+  color: #0c5460;
+  padding: 10px;
+  margin-top: 10px;
+  border: 1px solid #bee5eb;
+  border-radius: 5px;
+  display: none; /* Initially hidden */
+}

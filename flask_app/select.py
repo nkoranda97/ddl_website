@@ -53,28 +53,52 @@ def upload():
 
                     files_in_folder = os.listdir(sample_folder)
                     if not any(f.endswith('.csv') for f in files_in_folder) or not any(f.endswith('.fasta') for f in files_in_folder):
+                        print('thinks not both fasta and csv')
                         flash(f'Folder {extracted_folder} does not contain both .csv and .fasta files.')
                         return redirect(request.url)
                 except zipfile.BadZipFile:
+                    print('thinks failed to unzip file')
                     flash(f'Failed to unzip file {filename}.')
                     return redirect(request.url)
                 except Exception as e:
+                    print('error with processing file')
                     flash(f'An error occurred while processing file {filename}.')
                     return redirect(request.url)
                 
-        adata_path, vdj_path = preprocess(project_folder, sample_folders)
+        data_uploaded = request.form['data_uploaded']
+        species = request.form['species']
+        
+        
+        if data_uploaded == 'Both':
+            
+            adata_path, vdj_path = preprocess(project_folder, sample_folders, data_uploaded, species)
 
-        if error is None:
-            try:
-                db.execute(
-                    'INSERT INTO projects (project_name, project_author, creation_date, directory_path, vdj_path, adata_path) VALUES (?, ?, ?, ?, ?, ?)',
-                    (project_name, author_name, current_date, project_folder, vdj_path, adata_path)
-                )
-                db.commit()
-            except db.IntegrityError:
-                error = f'Project Name {project_name} already exists.'
-            else:
-                return redirect(url_for('select.project_list'))
+            if error is None:
+                try:
+                    db.execute(
+                        'INSERT INTO projects (project_name, project_author, creation_date, directory_path, vdj_path, adata_path) VALUES (?, ?, ?, ?, ?, ?)',
+                        (project_name, author_name, current_date, project_folder, vdj_path, adata_path)
+                    )
+                    db.commit()
+                except db.IntegrityError:
+                    error = f'Project Name {project_name} already exists.'
+                else:
+                    return redirect(url_for('select.project_list'))
+        elif data_uploaded == 'VDJ':
+            vdj_path = preprocess(project_folder, sample_folders, data_uploaded, species)
+
+            if error is None:
+                try:
+                    db.execute(
+                        'INSERT INTO projects (project_name, project_author, creation_date, directory_path, vdj_path, adata_path) VALUES (?, ?, ?, ?, ?, ?)',
+                        (project_name, author_name, current_date, project_folder, vdj_path, 'NULL')
+                    )
+                    db.commit()
+                except db.IntegrityError:
+                    error = f'Project Name {project_name} already exists.'
+                else:
+                    return redirect(url_for('select.project_list'))
+
         
     return render_template('select/upload.html')
 
