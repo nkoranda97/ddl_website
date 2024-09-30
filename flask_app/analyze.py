@@ -6,7 +6,7 @@ from bokeh.models import Tabs, TabPanel
 from bokeh.resources import CDN
 import dandelion as ddl
 import scanpy as sc
-from .plotting import plot
+from .plotting import plot, alignment_viewer
 
 bp = Blueprint('analyze', __name__, url_prefix='/analyze')
 
@@ -50,10 +50,13 @@ def workspace(project_id):
     
     p3 = plot.table(df)
     
+    p4 = alignment_viewer.view_alignment(vdj.data, 'IGKV3-4*01')
+    
     p1p2p3 = Tabs(tabs = [
         TabPanel(child = p1, title = 'Bar Graph'),
         TabPanel(child = p2, title = 'Pie Graph'),
         TabPanel(child = p3, title = 'Date Table'),
+        TabPanel(child = p4, title = 'Alignment Viewer' )
     ])
 
     # Create a simple line chart
