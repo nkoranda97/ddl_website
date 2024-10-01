@@ -4,10 +4,10 @@ from bokeh.embed import components
 from bokeh.plotting import figure
 from bokeh.models import Tabs, TabPanel
 from bokeh.resources import CDN
-import dandelion as ddl
-import scanpy as sc
+
 from .plotting import plot, alignment_viewer
 from .bokeh_logo.logo_generator import generate_logo
+from .ddl import load_project
 
 bp = Blueprint('analyze', __name__, url_prefix='/analyze')
 
@@ -76,12 +76,3 @@ def workspace(project_id):
                            project=project,
                            resources=CDN.render())
 
-def load_project(project):
-    vdj_path = project['vdj_path']
-    adata_path = project['adata_path']
-    vdj = ddl.read_h5ddl(vdj_path)
-    if adata_path != 'NULL':
-        adata = sc.read(adata_path)
-        return vdj, adata
-    else:
-        return vdj, None
