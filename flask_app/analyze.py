@@ -7,6 +7,7 @@ from bokeh.resources import CDN
 import dandelion as ddl
 import scanpy as sc
 from .plotting import plot, alignment_viewer
+from .bokeh_logo.logo_generator import generate_logo
 
 bp = Blueprint('analyze', __name__, url_prefix='/analyze')
 
@@ -50,7 +51,9 @@ def workspace(project_id):
     
     p3 = plot.table(df)
     
-    p4 = alignment_viewer.view_alignment(vdj.data, 'IGKV3-4*01')
+    p4 = alignment_viewer.view_alignment(vdj.data, 'IGKV3-4*01', title = 'IGKV3-4*01')
+    
+    p5 = generate_logo(vdj.data, 'seqlogo', color='proteinClustal', width=16, gene = 'IGKV3-4*01')
     
     p1p2p3 = Tabs(tabs = [
         TabPanel(child = p1, title = 'Bar Graph'),
@@ -65,7 +68,7 @@ def workspace(project_id):
     
 
     # Get the script and div components
-    script, div = components([p1p2p3, p2, p3])
+    script, div = components([p1p2p3, p5, p3])
 
     return render_template('analyze/workspace.html',
                            script=script, 

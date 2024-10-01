@@ -38,5 +38,9 @@ def create_app(test_config = None):
     from . import analyze
     app.register_blueprint(analyze.bp)
     
+    @app.route('/static/<path:filename>')
+    def serve_static(filename):
+        return app.send_static_file(filename)
+    
     
     return app

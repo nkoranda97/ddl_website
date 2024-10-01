@@ -3,34 +3,34 @@ from Bio.SeqRecord import SeqRecord
 from Bio import AlignIO
 from Bio.Seq import Seq
 
+import os
 
 import numpy as np
 
 from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, Plot, Grid, Range1d
+from bokeh.models import ColumnDataSource, Plot, Grid, Range1d, Title
 from bokeh.models.glyphs import Text, Rect
 from bokeh.layouts import gridplot
 
 def create_alignmnet(df, gene: str):
     sequences = df[df['v_call'] == gene][['sequence_id', 'sequence_alignment']].to_dict()['sequence_alignment']
-    alignment = [SeqRecord(Seq(value.replace('.', '')).translate(), id=key) for key, value in sequences.items()]
+    alignment = [SeqRecord(Seq(value.replace('.', '')).translate(), id=os.path.basename(key)) for key, value in sequences.items()]
     return MultipleSeqAlignment(alignment)
 
 def get_colors(seqs):
     """make colors for bases in sequence"""
     text = [i for s in list(seqs) for i in s]
     clrs = {
-        'A': 'red', 'C': 'blue', 'D': 'purple', 'E': 'purple', 'F': 'green',
-        'G': 'orange', 'H': 'cyan', 'I': 'green', 'K': 'purple', 'L': 'green',
-        'M': 'green', 'N': 'cyan', 'P': 'orange', 'Q': 'cyan', 'R': 'purple',
-        'S': 'orange', 'T': 'orange', 'V': 'green', 'W': 'green', 'Y': 'green',
+        'A': 'red', 'C': 'blue', 'D': 'purple', 'E': 'pink', 'F': 'green',
+        'G': 'orange', 'H': 'cyan', 'I': 'yellow', 'K': 'magenta', 'L': 'lime',
+        'M': 'teal', 'N': 'brown', 'P': 'olive', 'Q': 'navy', 'R': 'maroon',
+        'S': 'gold', 'T': 'silver', 'V': 'coral', 'W': 'indigo', 'Y': 'violet',
         '.': 'white', '-': 'white'
     }
-    
     colors = [clrs[i] for i in text]
     return colors
 
-def make_alignment(aln, fontsize="9pt", plot_width=800):
+def make_alignment(aln, fontsize="9pt", plot_width=800, title = None):
     """Bokeh sequence alignment view"""
 
     #make sequence and id lists from the aln object
@@ -76,13 +76,13 @@ def make_alignment(aln, fontsize="9pt", plot_width=800):
 
     #sequence text view with ability to scroll along x axis
     p1 = figure(title=None, width=plot_width, height=plot_height,
-                x_range=view_range, y_range=ids, tools="xpan,reset, ypan, wheel_zoom",
+                x_range=view_range, y_range=ids, tools="pan,reset,wheel_zoom",
                 min_border=0, toolbar_location='below')#, lod_factor=1)          
     glyph = Text(x="x", y="y", text="text", text_align='center',text_color="black",
                 text_font="monospace",text_font_size=fontsize)
     rects = Rect(x="x", y="recty",  width=1, height=1, fill_color="colors",
                 line_color=None, fill_alpha=0.4)
-    p1.add_glyph(source, glyph)
+    p1.add_glyph(source, glyph,)
     p1.add_glyph(source, rects)
 
     p1.grid.visible = False
@@ -93,9 +93,9 @@ def make_alignment(aln, fontsize="9pt", plot_width=800):
     p = gridplot([[p],[p1]], toolbar_location='below')
     return p
 
-def view_alignment(df, gene:str):
+def view_alignment(df, gene:str, title):
     alignment = create_alignmnet(df, gene)
-    return make_alignment(alignment)
+    return make_alignment(alignment, plot_width=1200, title = title)
 
 if __name__ == "__main__":
     from bokeh.io import show
