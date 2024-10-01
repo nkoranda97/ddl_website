@@ -11,8 +11,8 @@ from .ddl import load_project
 
 bp = Blueprint('analyze', __name__, url_prefix='/analyze')
 
-@bp.route('/workspace/<int:project_id>')
-def workspace(project_id):
+@bp.route('/graphs/<int:project_id>')
+def graphs(project_id):
     db = get_db()
     project = db.execute(
         'SELECT * FROM projects WHERE project_id = ?',
@@ -70,7 +70,7 @@ def workspace(project_id):
     # Get the script and div components
     script, div = components([p1p2p3, p5, p3])
 
-    return render_template('analyze/workspace.html',
+    return render_template('analyze/graphs.html',
                            script=script, 
                            div=div, 
                            project=project,
