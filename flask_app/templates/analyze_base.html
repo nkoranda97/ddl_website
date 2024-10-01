@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Analysis Workspace - {% block analysis_title %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+    <div class="analysis-container">
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('analyze.graphs', project_id=project_id) }}">Graphs</a></li>
+                <li><a href="{{ url_for('analyze.alignment', project_id=project_id) }}">Alignments</a></li>
+            </ul>
+        </nav>
+        {% block analysis_content %}{% endblock %}
+    </div>
+{% endblock %}

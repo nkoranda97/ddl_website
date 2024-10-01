@@ -23,7 +23,6 @@ def graphs(project_id):
     
     df = vdj.metadata
     
-    
     p1_1 = plot.bar(df, x='v_call_VDJ')
     p1_2 = plot.bar(df, x='c_call_VDJ')
     p1_3 = plot.bar(df, x='j_call_VDJ')
@@ -36,43 +35,63 @@ def graphs(project_id):
         TabPanel(child=p1_4, title='isotype'),
     ])
     
-    # Create a simple bar chart
-    p2_1 = plot.pie(df, x = 'v_call_VDJ')
-    p2_2 = plot.pie(df, x = 'c_call_VDJ')
-    p2_3 = plot.pie(df, x = 'j_call_VDJ')
-    p2_4 = plot.pie(df, x = 'isotype')
+    p2_1 = plot.pie(df, x='v_call_VDJ')
+    p2_2 = plot.pie(df, x='c_call_VDJ')
+    p2_3 = plot.pie(df, x='j_call_VDJ')
+    p2_4 = plot.pie(df, x='isotype')
     
-    p2 = Tabs(tabs = [
-        TabPanel(child = p2_1, title = 'v_call_VDJ'),
-        TabPanel(child = p2_2, title = 'c_call_VDJ'),
-        TabPanel(child = p2_3, title = 'j_call_VDJ'),
-        TabPanel(child = p2_4, title = 'isotype'),
+    p2 = Tabs(tabs=[
+        TabPanel(child=p2_1, title='v_call_VDJ'),
+        TabPanel(child=p2_2, title='c_call_VDJ'),
+        TabPanel(child=p2_3, title='j_call_VDJ'),
+        TabPanel(child=p2_4, title='isotype'),
     ])
     
     p3 = plot.table(df)
     
-    p4 = alignment_viewer.view_alignment(vdj.data, 'IGKV3-4*01', title = 'IGKV3-4*01')
     
-    p5 = generate_logo(vdj.data, 'seqlogo', color='proteinClustal', width=16, gene = 'IGKV3-4*01')
     
-    p1p2p3 = Tabs(tabs = [
-        TabPanel(child = p1, title = 'Bar Graph'),
-        TabPanel(child = p2, title = 'Pie Graph'),
-        TabPanel(child = p3, title = 'Date Table'),
-        TabPanel(child = p4, title = 'Alignment Viewer' )
+    p5 = generate_logo(vdj.data, 'seqlogo', color='proteinClustal', width=16, gene='IGKV3-4*01')
+    
+    p1p2p3 = Tabs(tabs=[
+        TabPanel(child=p1, title='Bar Graph'),
+        TabPanel(child=p2, title='Pie Graph'),
+        TabPanel(child=p3, title='Data Table'),
     ])
 
     # Create a simple line chart
-    p3 = figure(title="Line Chart")
-    p3.line([1, 2, 3], [4, 5, 6])
+    p6 = figure(title="Line Chart")
+    p6.line([1, 2, 3], [4, 5, 6])
     
-
     # Get the script and div components
-    script, div = components([p1p2p3, p5, p3])
+    script, div = components([p1p2p3, p5, p6])
 
     return render_template('analyze/graphs.html',
                            script=script, 
                            div=div, 
                            project=project,
+                           project_id=project_id,
                            resources=CDN.render())
 
+@bp.route('/alignment/<int:project_id>')
+def alignment(project_id):
+    db = get_db()
+    project = db.execute(
+        'SELECT * FROM projects WHERE project_id = ?',
+        (project_id,)
+    ).fetchone()
+    
+    vdj, adata = load_project(project)
+    
+    df = vdj.metadata
+    
+    p = alignment_viewer.view_alignment(vdj.data, 'IGKV3-4*01', title='IGKV3-4*01')
+    
+    script, div = components([p])
+    
+    return render_template('analyze/alignment.html',
+                        script=script, 
+                        div=div, 
+                        project=project,
+                        project_id=project_id,
+                        resources=CDN.render())
