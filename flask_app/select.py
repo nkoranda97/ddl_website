@@ -12,7 +12,7 @@ from werkzeug.utils import secure_filename
 from flask_app.db import get_db
 from .ddl import preprocess
 
-bp = Blueprint('select', __name__, url_prefix = '/')
+bp = Blueprint('select', __name__, url_prefix = '/select')
 
 @bp.route('/upload', methods = ('GET', 'POST'))
 def upload():

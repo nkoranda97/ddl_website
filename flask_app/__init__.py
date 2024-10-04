@@ -1,15 +1,16 @@
 import os
+from flask import Flask
 
-from flask import Flask, render_template
 
 def create_app(test_config = None):
     app = Flask(__name__, instance_relative_config = True)
     
     app.config.from_mapping(
-        SECRET_KEY = 'dev',
+        SECRET_KEY = '87b2beec9695cc7c2028e5ff6ce0127855741d4c0bc2ce5506dbfb4033302b91',
         DATABASE = os.path.join(app.instance_path, 'flask_app.sqlite'),
         UPLOAD_FOLDER = os.path.join(app.instance_path, 'uploads/')
     )
+
     
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
@@ -24,19 +25,21 @@ def create_app(test_config = None):
     except OSError:
         pass
 
-    @app.route('/')
-    def index():
-        return render_template('index/index.html')
+
     
     from . import db
     db.init_app(app)
     
+    from . import index
+    app.register_blueprint(index.bp)
     
     from . import select
     app.register_blueprint(select.bp)
     
     from . import analyze
     app.register_blueprint(analyze.bp)
+    
+
     
     @app.route('/static/<path:filename>')
     def serve_static(filename):

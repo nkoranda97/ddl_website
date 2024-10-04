@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS projects;
+DROP TABLE IF EXISTS user;
 
 CREATE TABLE projects (
     project_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -9,3 +10,10 @@ CREATE TABLE projects (
     vdj_path TEXT NOT NULL,
     adata_path TEXT NOT NULL
 );
+
+CREATE TABLE user (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL
+);
+

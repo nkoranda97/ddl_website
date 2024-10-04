@@ -1,12 +1,7 @@
-{% extends "base.html" %}
-
-{% block title %}Home{% endblock %}
+{% extends "base_auth.html" %}
 
 {% block content %}
-<h1>Dandelion Processiing</h1>
-<p>Select an option below:</p>
-<div>
-    <a href="{{ url_for('select.upload') }}" class="button">Upload New Data</a>
-    <a href="{{ url_for('select.project_list') }}" class="button">Projects</a>
-</div>
+
+<h1> Bjorkman BCR Analysis  </h1>
+
 {% endblock %}
