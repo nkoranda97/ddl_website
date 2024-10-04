@@ -3,10 +3,12 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h1>Dandelion Processiing</h1>
-<p>Select an option below:</p>
-<div>
-    <a href="{{ url_for('select.upload') }}" class="button">Upload New Data</a>
-    <a href="{{ url_for('select.project_list') }}" class="button">Projects</a>
-</div>
+<section>
+    <h1>Dandelion Processing</h1>
+    <p>Select an option below:</p>
+    <div>
+      <a href="{{ url_for('select.upload') }}" class="button">Upload New Data</a>
+      <a href="{{ url_for('select.project_list') }}" class="button">Projects</a>
+    </div>
+  </section>
 {% endblock %}

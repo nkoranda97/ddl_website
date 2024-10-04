@@ -89,13 +89,14 @@ def make_alignment(aln, fontsize="9pt", plot_width=800, title = None):
     p1.xaxis.major_label_text_font_style = "bold"
     p1.yaxis.minor_tick_line_width = 0
     p1.yaxis.major_tick_line_width = 0
+    p.sizing_mode = 'stretch_both'
 
-    p = gridplot([[p],[p1]], toolbar_location='below')
+    p = gridplot([[p1]], toolbar_location='below', sizing_mode='stretch_both')
     return p
 
 def view_alignment(df, gene:str, title):
     alignment = create_alignmnet(df, gene)
-    return make_alignment(alignment, plot_width=1200, title = title)
+    return make_alignment(alignment, plot_width=2000, title = title)
 
 if __name__ == "__main__":
     from bokeh.io import show

@@ -4,25 +4,16 @@
     Graphs
 {% endblock %}
 
-{% block analysis_content %}
+{% block content %}
     {{ resources|safe }}
     {{ script|safe }}
     <main>
-        <h1>{{ project['project_name'] }}</h1>
         
         <div class="grid-container">
             <div class="grid-item">
                 {{ div[0]|safe }}
             </div>
-            <div class="grid-item">
-                {{ div[1]|safe }}
-            </div>
-            <div class="grid-item">
-                {{ div[2]|safe }}
-            </div>
-            <div class="grid-item">
-                {{ div[3]|safe }}
-            </div>
+
         </div>
     </main>
 {% endblock %}

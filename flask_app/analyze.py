@@ -58,20 +58,17 @@ def graphs(project_id):
         TabPanel(child=p2, title='Pie Graph'),
         TabPanel(child=p3, title='Data Table'),
     ])
-
-    # Create a simple line chart
-    p6 = figure(title="Line Chart")
-    p6.line([1, 2, 3], [4, 5, 6])
     
     # Get the script and div components
-    script, div = components([p1p2p3, p5, p6])
+    script, div = components([p1p2p3])
 
     return render_template('analyze/graphs.html',
                            script=script, 
                            div=div, 
                            project=project,
                            project_id=project_id,
-                           resources=CDN.render())
+                           resources=CDN.render(),
+                           active_tab = 'graphs')
 
 @bp.route('/alignment/<int:project_id>')
 def alignment(project_id):
@@ -94,4 +91,27 @@ def alignment(project_id):
                         div=div, 
                         project=project,
                         project_id=project_id,
-                        resources=CDN.render())
+                        resources=CDN.render(),
+                        active_tab = 'alignments')
+@bp.route('/logo/<int:project_id>')
+def logo(project_id):
+    db = get_db()
+    project = db.execute(
+        'SELECT * FROM projects WHERE project_id = ?',
+        (project_id,)
+    ).fetchone()
+    
+    vdj, adata = load_project(project)
+    
+    p = generate_logo(vdj.data, 'seqlogo', color='proteinClustal', width=16, gene='IGKV3-4*01')
+
+    script, div = components([p])
+
+    
+    return render_template('analyze/logo.html',
+                    script=script, 
+                    div=div, 
+                    project=project,
+                    project_id=project_id,
+                    resources=CDN.render(),
+                    active_tab = 'logo')

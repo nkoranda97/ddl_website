@@ -53,7 +53,7 @@ def bar(df, x):
     bar_width_dropdown.js_on_event('menu_item_click', bar_width_callback)
     toolbox.children.append(bar_width_dropdown)
 
-    layout = column(p,toolbox)
+    layout = column(p,toolbox, sizing_mode='stretch_both')
     
     return layout
 
@@ -105,7 +105,7 @@ def pie(df, x, title=''):
     
     
     
-    layout = column(slider, p)
+    layout = column(slider, p, sizing_mode='stretch_both')
     
     return layout
 

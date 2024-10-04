@@ -1,17 +1,48 @@
-{% extends "base.html" %}
-
-{% block title %}
-    Analysis Workspace - {% block analysis_title %}{% endblock %}
-{% endblock %}
-
-{% block content %}
-    <div class="analysis-container">
-        <nav>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Flask App{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="header-nav">
             <ul>
-                <li><a href="{{ url_for('analyze.graphs', project_id=project_id) }}">Graphs</a></li>
-                <li><a href="{{ url_for('analyze.alignment', project_id=project_id) }}">Alignments</a></li>
+                <li><a href="{{ url_for('index.home') }}">Home</a></li>
+                <li><a href="{{ url_for('index.logout') }}">Logout</a></li>
+                
             </ul>
         </nav>
-        {% block analysis_content %}{% endblock %}
+    </header>
+
+    <div class="layout">
+        <aside class="sidebar" id="sidebar">
+            <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+            <ul>
+                <li><a href="{{ url_for('analyze.graphs', project_id=project_id) }}" class="{% if active_tab == 'graphs' %}active{% endif %}">Graphs</a></li>
+                <li><a href="{{ url_for('analyze.alignment', project_id=project_id) }}" class="{% if active_tab == 'alignments' %}active{% endif %}">Alignments</a></li>
+                <li><a href="{{ url_for('analyze.logo', project_id=project_id) }}" class="{% if active_tab == 'logo' %}active{% endif %}">Logo</a></li>
+
+            </ul>
+        </aside>
+
+        <main>
+            {% block content %}{% endblock %}
+        </main>
     </div>
-{% endblock %}
+
+    <footer>
+        <p> nicholas.koranda@gmail.com</p>
+    </footer>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+        }
+    </script>
+</body>
+</html>
