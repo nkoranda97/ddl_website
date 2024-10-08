@@ -33,8 +33,8 @@ def create_app(test_config = None):
     from . import index
     app.register_blueprint(index.bp)
     
-    from . import select
-    app.register_blueprint(select.bp)
+    from . import select_project
+    app.register_blueprint(select_project.bp)
     
     from . import analyze
     app.register_blueprint(analyze.bp)
