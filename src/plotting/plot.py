@@ -96,7 +96,7 @@ def pie(df, x, title=''):
     
     slider = Slider(start=0, end=50, value=0, step=0.01, title="Percent Cutoff")
     
-    with open('flask_app/static/JavaScript/update_pie.js', 'r') as js_file:
+    with open('src/static/JavaScript/update_pie.js', 'r') as js_file:
         js_code = js_file.read()
     
     callback = CustomJS(args=dict(source=source, slider=slider, original_data=source.data, x=x), code=js_code)
