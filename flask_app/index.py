@@ -3,6 +3,7 @@ from flask import (
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_app.db import get_db
+import functools
 
 
 bp = Blueprint('index', __name__, url_prefix='/')
@@ -15,14 +16,21 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
+            'SELECT * FROM user WHERE user_id = ?', (user_id,)
         ).fetchone()
+        
+def login_required(view):
+    @functools.wraps(view) 
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('index.login'))
+        
+        return view(**kwargs)
+    
+    return wrapped_view
 
 @bp.route('/')
 def index():
-    if 'username' in session:
-        return redirect(url_for('index.home'))
-    
     return render_template('index/index.html')
 
 @bp.route('/login', methods = ['GET', 'POST'])
@@ -43,7 +51,7 @@ def login():
 
         if error is None:
             session.clear()
-            session['username'] = user['username']
+            session['user_id'] = user['user_id']
             return redirect(url_for('index.home'))
 
         flash(error)
@@ -55,7 +63,11 @@ def logout():
     session.clear()
     return redirect(url_for('index.index'))
 
+
 @bp.route('/home')
+@login_required
 def home():
     return render_template('index/home.html')
+
+
 

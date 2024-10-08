@@ -11,10 +11,12 @@ from werkzeug.utils import secure_filename
 
 from flask_app.db import get_db
 from .ddl import preprocess
+from .index import login_required
 
 bp = Blueprint('select', __name__, url_prefix = '/select')
 
 @bp.route('/upload', methods = ('GET', 'POST'))
+@login_required
 def upload():
     if request.method == 'POST':
         project_name = request.form['project_name']
@@ -103,6 +105,7 @@ def upload():
     return render_template('select/upload.html')
 
 @bp.route('/project_list')
+@login_required
 def project_list():
     db = get_db()
     projects = db.execute(
@@ -111,6 +114,7 @@ def project_list():
     return render_template('select/project_list.html', projects = projects)
 
 @bp.route('/delete_project/<int:project_id>', methods=['POST'])
+@login_required
 def delete_project(project_id):
     db = get_db()
     project = db.execute('SELECT directory_path FROM projects WHERE project_id = ?', (project_id,)).fetchone()

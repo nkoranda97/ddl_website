@@ -8,10 +8,12 @@ from bokeh.resources import CDN
 from .plotting import plot, alignment_viewer
 from .bokeh_logo.logo_generator import generate_logo
 from .ddl import load_project
+from .index import login_required
 
 bp = Blueprint('analyze', __name__, url_prefix='/analyze')
 
 @bp.route('/graphs/<int:project_id>')
+@login_required
 def graphs(project_id):
     db = get_db()
     project = db.execute(
@@ -71,6 +73,7 @@ def graphs(project_id):
                            active_tab = 'graphs')
 
 @bp.route('/alignment/<int:project_id>')
+@login_required
 def alignment(project_id):
     db = get_db()
     project = db.execute(
@@ -93,7 +96,9 @@ def alignment(project_id):
                         project_id=project_id,
                         resources=CDN.render(),
                         active_tab = 'alignments')
+    
 @bp.route('/logo/<int:project_id>')
+@login_required
 def logo(project_id):
     db = get_db()
     project = db.execute(

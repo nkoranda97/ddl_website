@@ -1,5 +1,6 @@
 .history
 .vscode
+.env
 instance/
 flask_app/__pycache__/
 flask_app/plotlydash/__pycache__/

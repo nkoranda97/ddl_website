@@ -4,8 +4,13 @@ import click
 from flask import current_app, g
 from werkzeug.security import generate_password_hash
 
-username = "bjorkman"
-password = "qykrip-rabkah-4xubdI"
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+username = os.getenv("DB_USERNAME")
+password = os.getenv("DB_PASSWORD")
 hashed_password = generate_password_hash(password)
 
 def get_db():
