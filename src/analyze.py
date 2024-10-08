@@ -52,6 +52,7 @@ def graphs(project_id):
     p3 = plot.table(df)
     
     
+    
     p1p2p3 = Tabs(tabs=[
         TabPanel(child=p1, title='Bar Graph'),
         TabPanel(child=p2, title='Pie Graph'),

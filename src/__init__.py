@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, send_from_directory
 
 
 def create_app(test_config = None):
@@ -39,6 +39,10 @@ def create_app(test_config = None):
     from . import analyze
     app.register_blueprint(analyze.bp)
     
+    @app.route('/favicon.ico')
+    def favicon():
+        return send_from_directory(os.path.join(app.root_path, 'static/images'),
+                                   'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
     
     @app.route('/static/<path:filename>')
