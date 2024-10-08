@@ -275,6 +275,7 @@ dependencies:
       - presto==0.7.2
       - pynndescent==0.5.13
       - python-dateutil==2.9.0.post0
+      - python-dotenv==1.0.1
       - sc-dandelion==0.3.8
       - scanpy==1.10.3
       - scikit-learn==1.5.2
