@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, session
-from flask_app.db import get_db
+from src.db import get_db
 from bokeh.embed import components
 from bokeh.plotting import figure
 from bokeh.models import Tabs, TabPanel

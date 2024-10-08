@@ -2,7 +2,7 @@ from flask import (
     Blueprint, flash, redirect, render_template, request, url_for, session, g
 )
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_app.db import get_db
+from src.db import get_db
 import functools
 
 
