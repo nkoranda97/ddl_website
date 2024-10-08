@@ -1,14 +1,14 @@
 import os
 from flask import Flask, send_from_directory
-
+from dotenv import load_dotenv
 
 def create_app(test_config = None):
     app = Flask(__name__, instance_relative_config = True)
     
     app.config.from_mapping(
-        SECRET_KEY = '87b2beec9695cc7c2028e5ff6ce0127855741d4c0bc2ce5506dbfb4033302b91',
-        DATABASE = os.path.join(app.instance_path, 'flask_app.sqlite'),
-        UPLOAD_FOLDER = os.path.join(app.instance_path, 'uploads/')
+        SECRET_KEY=os.getenv('SECRET_KEY'),
+        DATABASE=os.path.join(app.instance_path, 'flask_app.sqlite'),
+        UPLOAD_FOLDER=os.path.join(app.instance_path, 'uploads/')
     )
 
     
