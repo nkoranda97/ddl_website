@@ -1,15 +1,19 @@
 import os
 from flask import Flask, send_from_directory
 from dotenv import load_dotenv
+from flask_wtf.csrf import CSRFProtect
+
 
 def create_app(test_config = None):
     app = Flask(__name__, instance_relative_config = True)
-    
+    load_dotenv()
     app.config.from_mapping(
         SECRET_KEY=os.getenv('SECRET_KEY'),
         DATABASE=os.path.join(app.instance_path, 'flask_app.sqlite'),
         UPLOAD_FOLDER=os.path.join(app.instance_path, 'uploads/')
     )
+
+    csrf = CSRFProtect(app)
 
     
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
