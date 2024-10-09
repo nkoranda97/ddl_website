@@ -7,7 +7,7 @@ from bokeh.resources import CDN
 
 from .plotting import plot, alignment_viewer
 from .bokeh_logo.logo_generator import generate_logo
-from .ddl import load_project
+from .utils.ddl import load_project
 from .index import login_required
 
 bp = Blueprint('analyze', __name__, url_prefix='/analyze')

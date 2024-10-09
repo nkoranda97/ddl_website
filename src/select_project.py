@@ -9,7 +9,7 @@ from flask import (
 from werkzeug.utils import secure_filename
 
 from src.db import get_db
-from .ddl import preprocess
+from .utils.ddl import preprocess
 from .index import login_required
 from .utils.forms import DataUpload
 from .utils.file_handle import file_extraction
