@@ -4,14 +4,15 @@
 {% block content %}
 
 <form method="post" action="/login" class="login-form">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {{ form.csrf_token }}
     <div>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required>
+        {{ form.username.label }}
+        {{ form.username }}
     </div>
     <div>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required>
+        {{ form.password.label }}
+        {{ form.password }}
+    
     </div>
     <div>
         <button type="submit">Login</button>

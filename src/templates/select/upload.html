@@ -6,37 +6,43 @@
 <div>
   <h1>Create Project</h1>
   <form method="post" enctype="multipart/form-data" onsubmit="return checkGEXAndSubmit()">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    {{ form.csrf_token }}
 
-    <label for="project_name">Project Name:</label>
-    <input type="text" id="project_name" name="project_name" placeholder="No spaces use underscore. Ex. Project_1" required>
-
-    <label for="author_name">Author Name:</label>
-    <input type="text" id="author_name" name="author_name" required>
-
-    <label for="folders">Upload Zip Folders:</label>
-    <input type="file" id="folders" name="folders" multiple required>
-
-    <label for="data_uploaded">Data Uploaded:</label>
-    <div class="radio-group">
-      <label for="VDJ">
-        <input type="radio" name="data_uploaded" id="VDJ" value="VDJ"> VDJ
-      </label><br>
-      <label for="GEX">
-        <input type="radio" name="data_uploaded" id="GEX" value="GEX"> GEX
-      </label><br>
-      <label for="Both">
-        <input type="radio" name="data_uploaded" id="Both" value="Both"> Both
-      </label><br>
+    <div class="form-group">
+      {{ form.project_name.label }}
+      {{ form.project_name(class="form-control") }}
     </div>
-    <label for="species">Species:</label>
-    <div class="radio-group">
-      <label for="human">
-        <input type="radio" name="species" id="human" value="human"> Human
-      </label><br>
-      <label for="mouse">
-        <input type="radio" name="species" id="mouse" value="mouse"> Mouse
-      </label><br>
+
+    <div class="form-group">
+      {{ form.author_name.label }}
+      {{ form.author_name(class="form-control") }}
+    </div>
+
+    <div class="form-group">
+      {{ form.zip_folder.label }}
+      {{ form.zip_folder(class="form-control-file") }}
+    </div>
+
+    <div class="form-group">
+      {{ form.data_uploaded.label }}
+      <div class="radio-group">
+        {% for subfield in form.data_uploaded %}
+          <div class="radio-item">
+            {{ subfield }} {{ subfield.label }}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="form-group">
+      {{ form.species.label }}
+      <div class="radio-group">
+        {% for subfield in form.species %}
+          <div class="radio-item">
+            {{ subfield }} {{ subfield.label }}
+          </div>
+        {% endfor %}
+      </div>
     </div>
 
     <div id="gex-message" class="hover-message" style="display: none;">

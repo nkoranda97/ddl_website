@@ -6,7 +6,7 @@ from flask_wtf.csrf import CSRFProtect
 
 def create_app(test_config = None):
     app = Flask(__name__, instance_relative_config = True)
-    load_dotenv()
+    load_dotenv(override=True)
     app.config.from_mapping(
         SECRET_KEY=os.getenv('SECRET_KEY'),
         DATABASE=os.path.join(app.instance_path, 'flask_app.sqlite'),

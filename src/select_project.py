@@ -1,6 +1,5 @@
 from datetime import date
 import os
-import zipfile
 import shutil
 
 from flask import (
@@ -12,64 +11,31 @@ from werkzeug.utils import secure_filename
 from src.db import get_db
 from .ddl import preprocess
 from .index import login_required
+from .utils.forms import DataUpload
+from .utils.file_handle import file_extraction
 
 bp = Blueprint('select', __name__, url_prefix = '/select')
 
 @bp.route('/upload', methods = ('GET', 'POST'))
 @login_required
 def upload():
-    if request.method == 'POST':
-        project_name = request.form['project_name']
-        author_name = request.form['author_name']
-        project_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], project_name)
-        db = get_db()
-        error = None 
+    form = DataUpload()
+    
+    if form.validate_on_submit():
+        project_name = form.project_name.data
+        author_name = form.author_name.data
+        data_uploaded = form.data_uploaded.data
+        species = form.species.data
         current_date = date.today()
-        
-        if not project_name:
-            error = 'Project Name Required'
-        
-        if not author_name:
-            error = 'Name Required'
-            
+        files = form.zip_folder.data
+        db = get_db()
+        project_folder = os.path.join(current_app.config['UPLOAD_FOLDER'], project_name)
         if not os.path.exists(project_folder):
             os.makedirs(project_folder)
-            
-        files = request.files.getlist('folders')
-        sample_folders = []
         
-        for file in files:
-            if file and file.filename.endswith('.zip'):
-                filename = secure_filename(file.filename)
-                zip_path = os.path.join(project_folder, filename)
-                file.save(zip_path)
-
-                try:
-                    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
-                        zip_ref.extractall(project_folder)
-                    os.remove(zip_path) 
-
-                    extracted_folder = filename.rsplit('.', 1)[0]
-                    sample_folder = os.path.join(project_folder, extracted_folder)
-                    sample_folders.append(sample_folder)
-
-                    files_in_folder = os.listdir(sample_folder)
-                    if not any(f.endswith('.csv') for f in files_in_folder) or not any(f.endswith('.fasta') for f in files_in_folder):
-                        print('thinks not both fasta and csv')
-                        flash(f'Folder {extracted_folder} does not contain both .csv and .fasta files.')
-                        return redirect(request.url)
-                except zipfile.BadZipFile:
-                    print('thinks failed to unzip file')
-                    flash(f'Failed to unzip file {filename}.')
-                    return redirect(request.url)
-                except Exception as e:
-                    print('error with processing file')
-                    flash(f'An error occurred while processing file {filename}.')
-                    return redirect(request.url)
-                
-        data_uploaded = request.form['data_uploaded']
-        species = request.form['species']
+        sample_folders = file_extraction(files=files, project_folder=project_folder,landing_page=request.url)
         
+        error = None
         
         if data_uploaded == 'Both':
             
@@ -102,7 +68,7 @@ def upload():
                     return redirect(url_for('select.project_list'))
 
         
-    return render_template('select/upload.html')
+    return render_template('select/upload.html', form=form)
 
 @bp.route('/project_list')
 @login_required
