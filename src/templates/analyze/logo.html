@@ -5,12 +5,26 @@
 {% endblock %}
 
 {% block content %}
+    <form method="post" action="{{ url_for('analyze.logo', project_id=project_id) }}">
+        {{ form.csrf_token }}
+
+        <label for="gene">{{ form.gene.label }}</label>
+        {{ form.gene() }}
+
+        <button type="submit">Submit</button>
+    </form>
+
     {{ resources|safe }}
-    {{ script|safe }}
+    
     <main>
         <div class="grid-container">
             <div class="grid-item">
-                {{ div[0]|safe }}
+                {% if script and div %}
+                    {{ script|safe }}
+                    {{ div[0]|safe }}
+                {% else %}
+                    <p>Please select a gene from the dropdown and submit the form to generate the plot.</p>
+                {% endif %}
             </div>
         </div>
     </main>

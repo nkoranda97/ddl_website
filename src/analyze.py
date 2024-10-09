@@ -9,6 +9,7 @@ from .plotting import plot, alignment_viewer
 from .bokeh_logo.logo_generator import generate_logo
 from .utils.ddl import load_project
 from .index import login_required
+from .utils.forms import GeneSelect
 
 bp = Blueprint('analyze', __name__, url_prefix='/analyze')
 
@@ -95,7 +96,7 @@ def alignment(project_id):
                         resources=CDN.render(),
                         active_tab = 'alignments')
     
-@bp.route('/logo/<int:project_id>')
+@bp.route('/logo/<int:project_id>', methods=['GET', 'POST'])
 @login_required
 def logo(project_id):
     db = get_db()
@@ -104,11 +105,17 @@ def logo(project_id):
         (project_id,)
     ).fetchone()
     
-    vdj, adata = load_project(project)
+    script = None; div = None
     
-    p = generate_logo(vdj.data, 'seqlogo', color='proteinClustal', width=16, gene='IGKV3-4*01')
+    vdj, adata = load_project(project)
+    genes = vdj.data['v_call'].unique()
+    
+    form = GeneSelect(genes)
+    if form.validate_on_submit():
+        gene = form.gene.data
+        p = generate_logo(vdj.data, 'seqlogo', color='proteinClustal', width=16, gene=gene)
 
-    script, div = components([p])
+        script, div = components([p])
 
     
     return render_template('analyze/logo.html',
@@ -117,4 +124,5 @@ def logo(project_id):
                     project=project,
                     project_id=project_id,
                     resources=CDN.render(),
-                    active_tab = 'logo')
+                    active_tab = 'logo',
+                    form = form)
