@@ -84,14 +84,21 @@ def preprocess(upload_folder, samples, data_uploaded, species='human'):
         ddl.tl.find_clones(vdj)
         ddl.tl.generate_network(vdj)
         ddl.tl.clone_size(vdj)
-        
-        vdj.write(os.path.join(upload_folder, "processed_vdj.h5ddl"))
-        return os.path.join(upload_folder, "processed_vdj.h5ddl")
+        try:
+            vdj.write(os.path.join(upload_folder, "processed_vdj.h5ddl"))
+            return os.path.join(upload_folder, "processed_vdj.h5ddl")
+        except ValueError:
+            vdj.write_pkl(os.path.join(upload_folder, "processed_vdj.h5l"))
+            return os.path.join(upload_folder, "processed_vdj.h5l")
 
 def load_project(project):
     vdj_path = project['vdj_path']
     adata_path = project['adata_path']
-    vdj = ddl.read_h5ddl(vdj_path)
+    if vdj_path.endswith('.h5ddl'):
+        vdj = ddl.read_h5ddl(vdj_path)
+    elif vdj_path.endswith('.pkl'):
+        vdj = ddl.read_pkl(vdj_path)
+        
     if adata_path != 'NULL':
         adata = sc.read(adata_path)
         return vdj, adata
