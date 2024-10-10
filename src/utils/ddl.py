@@ -88,8 +88,8 @@ def preprocess(upload_folder, samples, data_uploaded, species='human'):
             vdj.write(os.path.join(upload_folder, "processed_vdj.h5ddl"))
             return os.path.join(upload_folder, "processed_vdj.h5ddl")
         except ValueError:
-            vdj.write_pkl(os.path.join(upload_folder, "processed_vdj.h5l"))
-            return os.path.join(upload_folder, "processed_vdj.h5l")
+            vdj.write_pkl(os.path.join(upload_folder, "processed_vdj.pkl"))
+            return os.path.join(upload_folder, "processed_vdj.pkl")
 
 def load_project(project):
     vdj_path = project['vdj_path']
