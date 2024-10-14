@@ -508,3 +508,35 @@ footer {
   width: 100% !important;
   height: 100% !important;  /* Ensure full height */
 }
+
+.grid-container {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.plot-container {
+  flex: 3; /* Adjust ratio as needed */
+}
+
+.dashboard-panel {
+  flex: 1;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: none; /* Hidden by default */
+  transition: transform 0.3s ease-in-out;
+  overflow-y: scroll;
+}
+
+.dashboard-panel.active {
+  display: block;
+  transform: translateX(0); /* Slide in effect */
+}
+
+@media (max-width: 768px) {
+  .grid-container {
+    flex-direction: column;
+  }
+}

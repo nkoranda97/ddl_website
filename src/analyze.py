@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session
+from flask import Blueprint, render_template, session, redirect, url_for
 from src.db import get_db
 from bokeh.embed import components
 from bokeh.plotting import figure
@@ -26,10 +26,12 @@ def graphs(project_id):
     
     df = vdj.metadata
     
-    p1_1 = plot.bar(df, x='v_call_VDJ')
-    p1_2 = plot.bar(df, x='c_call_VDJ')
-    p1_3 = plot.bar(df, x='j_call_VDJ')
-    p1_4 = plot.bar(df, x='isotype')
+    url = url_for('index.home')
+    
+    p1_1 = plot.bar(df, x='v_call_VDJ', url=url)
+    p1_2 = plot.bar(df, x='c_call_VDJ', url=url)
+    p1_3 = plot.bar(df, x='j_call_VDJ', url=url)
+    p1_4 = plot.bar(df, x='isotype', url=url)
 
     p1 = Tabs(tabs=[
         TabPanel(child=p1_1, title='v_call_VDJ'),

@@ -8,12 +8,28 @@
     {{ resources|safe }}
     {{ script|safe }}
     <main>
-        
         <div class="grid-container">
-            <div class="grid-item">
+            <div class="grid-item plot-container">
                 {{ div[0]|safe }}
             </div>
-
+            <div class="grid-item dashboard-panel" id="dashboardPanel">
+                <!-- Dashboard content will be dynamically updated -->
+            </div>
         </div>
     </main>
+
+    <script>
+        function openPanel(content) {
+            var panel = document.getElementById("dashboardPanel");
+            panel.innerHTML = content;
+            panel.classList.add("active");
+        }
+        
+        // Function to close the panel (optional)
+        function closePanel() {
+            var panel = document.getElementById("dashboardPanel");
+            panel.classList.remove("active");
+        }
+        </script>
+        
 {% endblock %}
