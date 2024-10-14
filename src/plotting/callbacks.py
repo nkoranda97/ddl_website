@@ -20,9 +20,7 @@ def side_panel_callback(source, x, project_id):
                     var entries = data.split('\\n');
                     content += "<p>" + option + ":</p>";
                     entries.forEach(function(entry) {
-                        // Split the entry at the colon and take the first part
                         var gene_part = entry.split(':')[0].trim();
-                        // Construct the URL directly in JavaScript
                         var url = base_url + encodeURIComponent(project_id) + '/' + encodeURIComponent(gene) + '/' + encodeURIComponent(gene_part);
                         content += "<pre><a href='" + url + "' target='_blank'>" + entry + "</a></pre><br>";
                     });
