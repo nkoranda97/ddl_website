@@ -2,7 +2,7 @@ from bokeh.models import CustomJS
 from flask import url_for
 
 def side_panel_callback(source, x):
-    base_url = url_for('index.home') # Replace with your actual base URL
+    base_url = url_for('index.home')
 
     return CustomJS(args=dict(source=source, base_url=base_url), code="""
         var selected = source.selected.indices;
