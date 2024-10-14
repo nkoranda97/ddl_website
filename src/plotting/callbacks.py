@@ -1,10 +1,9 @@
 from bokeh.models import CustomJS
-from flask import url_for
 
-def side_panel_callback(source, x):
-    base_url = url_for('index.home')
+def side_panel_callback(source, x, project_id):
+    base_url = "/analyze/gene_agg/"  # Base URL for the Flask route
 
-    return CustomJS(args=dict(source=source, base_url=base_url), code="""
+    return CustomJS(args=dict(source=source, base_url=base_url, project_id=project_id), code="""
         var selected = source.selected.indices;
         if (selected.length > 0) {
             var index = selected[0];
@@ -21,7 +20,10 @@ def side_panel_callback(source, x):
                     var entries = data.split('\\n');
                     content += "<p>" + option + ":</p>";
                     entries.forEach(function(entry) {
-                        var url = base_url;
+                        // Split the entry at the colon and take the first part
+                        var gene_part = entry.split(':')[0].trim();
+                        // Construct the URL directly in JavaScript
+                        var url = base_url + encodeURIComponent(project_id) + '/' + encodeURIComponent(gene) + '/' + encodeURIComponent(gene_part);
                         content += "<pre><a href='" + url + "' target='_blank'>" + entry + "</a></pre><br>";
                     });
                 }

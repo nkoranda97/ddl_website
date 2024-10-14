@@ -9,7 +9,7 @@ from collections import Counter
 
 from .callbacks import side_panel_callback
 
-def bar(df, x, url):
+def bar(df, x, project_id):
     df[x] = df[x].astype(str)
 
     # Assign the same URL to all entries
@@ -24,7 +24,7 @@ def bar(df, x, url):
         sorted_items = sorted(counter.items(), key=lambda item: item[1], reverse=True)
         return '\n'.join([f"{k}: {v}" for k, v in sorted_items])
     
-    x_agg = x_agg.applymap(format_dict)
+    x_agg = x_agg.map(format_dict)
     x_agg.reset_index(inplace = True)
     group = group.merge(x_agg, on=x)
 
@@ -56,7 +56,7 @@ def bar(df, x, url):
  
     """)
     '''
-    callback = side_panel_callback(source, x)
+    callback = side_panel_callback(source, x, project_id)
 
     p.js_on_event('tap', callback)
 
@@ -92,7 +92,7 @@ def bar(df, x, url):
     return layout
 
 
-def pie(df, x, title=''):
+def pie(df, x, project_id, title=''):
     df_copy = df.copy()
     df_copy = df_copy.dropna(subset=[x])
     df_copy.loc[:, x] = df_copy[x].astype(str)
@@ -112,7 +112,7 @@ def pie(df, x, title=''):
         sorted_items = sorted(counter.items(), key=lambda item: item[1], reverse=True)
         return '\n'.join([f"{k}: {v}" for k, v in sorted_items])
     
-    x_agg = x_agg.applymap(format_dict)
+    x_agg = x_agg.map(format_dict)
     x_agg.reset_index(inplace = True)
     group = group.merge(x_agg, on=x)
     
@@ -147,7 +147,7 @@ def pie(df, x, title=''):
     
     slider.js_on_change('value', callback)
     
-    callback = side_panel_callback(source,x)
+    callback = side_panel_callback(source,x, project_id)
     p.js_on_event('tap', callback)
     
     layout = column(slider, p, sizing_mode='stretch_both')

@@ -26,12 +26,12 @@ def graphs(project_id):
     
     df = vdj.metadata
     
-    url = url_for('index.home')
     
-    p1_1 = plot.bar(df, x='v_call_VDJ', url=url)
-    p1_2 = plot.bar(df, x='c_call_VDJ', url=url)
-    p1_3 = plot.bar(df, x='j_call_VDJ', url=url)
-    p1_4 = plot.bar(df, x='isotype', url=url)
+    
+    p1_1 = plot.bar(df, x='v_call_VDJ', project_id=project_id)
+    p1_2 = plot.bar(df, x='c_call_VDJ', project_id=project_id)
+    p1_3 = plot.bar(df, x='j_call_VDJ', project_id=project_id)
+    p1_4 = plot.bar(df, x='isotype', project_id=project_id)
 
     p1 = Tabs(tabs=[
         TabPanel(child=p1_1, title='v_call_VDJ'),
@@ -40,10 +40,10 @@ def graphs(project_id):
         TabPanel(child=p1_4, title='isotype'),
     ])
     
-    p2_1 = plot.pie(df, x='v_call_VDJ')
-    p2_2 = plot.pie(df, x='c_call_VDJ')
-    p2_3 = plot.pie(df, x='j_call_VDJ')
-    p2_4 = plot.pie(df, x='isotype')
+    p2_1 = plot.pie(df, x='v_call_VDJ',project_id=project_id)
+    p2_2 = plot.pie(df, x='c_call_VDJ',project_id=project_id)
+    p2_3 = plot.pie(df, x='j_call_VDJ',project_id=project_id)
+    p2_4 = plot.pie(df, x='isotype',project_id=project_id)
     
     p2 = Tabs(tabs=[
         TabPanel(child=p2_1, title='v_call_VDJ'),
@@ -128,3 +128,12 @@ def logo(project_id):
                     resources=CDN.render(),
                     active_tab = 'logo',
                     form = form)
+
+@bp.route('/gene_agg/<int:project_id>/<string:outer_gene>/<string:inner_gene>')
+@login_required
+def gene_agg(outer_gene, inner_gene, project_id):
+    
+    return render_template('analyze/agg_gene.html',
+                           project_id = project_id,
+                           outer_gene = outer_gene,
+                           inner_gene = inner_gene)
