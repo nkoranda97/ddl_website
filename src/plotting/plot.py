@@ -6,7 +6,8 @@ from bokeh.transform import cumsum
 import pandas as pd
 from math import pi
 from collections import Counter
-import json
+
+from .callbacks import side_panel_callback
 
 def bar(df, x, url):
     df[x] = df[x].astype(str)
@@ -55,29 +56,8 @@ def bar(df, x, url):
  
     """)
     '''
-    callback = CustomJS(args=dict(source=source), code="""
-        var selected = source.selected.indices;
-        if (selected.length > 0) {
-            var index = selected[0];
-            var gene = source.data['""" + x + """'][index];
-            var count = source.data['counts'][index];
-            var content = "<h3>Gene: " + gene + "</h3>" +
-                        "<p>Count: " + count + "</p>";
-                        
-            var options = ['j_call_VDJ', 'v_call_VDJ', 'c_call_VDJ', 'v_call_VJ', 'j_call_VJ', 'c_call_VJ'];
+    callback = side_panel_callback(source, x)
 
-            options.forEach(function(option) {
-                if (option !== '""" + x + """') {
-                    var data = source.data[option][index];
-                    content += "<p>" + option + ":</p><pre>" + data + "</pre><br>";
-                }
-            });
-
-            openPanel(content);
-        }
-    """)
-
-    
     p.js_on_event('tap', callback)
 
     toolbox = row()
@@ -126,10 +106,20 @@ def pie(df, x, title=''):
     colors = (Category20[20] * (len(group) // 20 + 1))[:len(group)]
     group['color'] = colors
     
+    x_agg = df.groupby(x).agg({col: list for col in df.columns if col != x})
+    def format_dict(lst):
+        counter = Counter(lst)
+        sorted_items = sorted(counter.items(), key=lambda item: item[1], reverse=True)
+        return '\n'.join([f"{k}: {v}" for k, v in sorted_items])
+    
+    x_agg = x_agg.applymap(format_dict)
+    x_agg.reset_index(inplace = True)
+    group = group.merge(x_agg, on=x)
+    
     source = ColumnDataSource(group)
     
     p = figure(height=600, width = 1000, title=title,
-               toolbar_location="above", tools="pan,wheel_zoom,box_zoom,reset",
+               toolbar_location="above", tools="pan,wheel_zoom,box_zoom,reset, tap",
                x_range=(-0.5, 1.0))
 
     p.wedge(x=0, y=1, radius=0.4,
@@ -157,7 +147,8 @@ def pie(df, x, title=''):
     
     slider.js_on_change('value', callback)
     
-    
+    callback = side_panel_callback(source,x)
+    p.js_on_event('tap', callback)
     
     layout = column(slider, p, sizing_mode='stretch_both')
     
