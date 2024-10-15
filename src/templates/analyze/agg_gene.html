@@ -5,9 +5,13 @@
 {% endblock %}
 
 {% block content %}
-<body>
-    <h1>{{ outer_gene }}</h1>
-    <h1>{{ inner_gene }}</h1>
-</body>
-</html>
+    {{ resources|safe }}
+    {{ script|safe }}
+    <main>
+        <div class="grid-container">
+            <div class="grid-item">
+                {{ div[0]|safe }}
+            </div>
+        </div>
+    </main>
 {% endblock %}

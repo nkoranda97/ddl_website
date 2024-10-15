@@ -5,7 +5,7 @@ from bokeh.io import show
 
 color_maps = colorMaps.get_all_color_map_names()
 
-def draw_seqlogo_from_file(df, color_scheme, web=False, plot_width=20, plot_height=160, steps=5, gene = 'all'):
+def draw_seqlogo_from_file(df, color_scheme, chain, web=False, plot_width=20, plot_height=160, steps=5, gene = 'all'):
     """ Gets a multiple sequence alignment file and draws the plot.
 
     :param file: The path to the clustal / clustal_num / msf / fasta file.
@@ -23,7 +23,7 @@ def draw_seqlogo_from_file(df, color_scheme, web=False, plot_width=20, plot_heig
     """
 
     sl = seqLogo.SeqLogo(plot_width, plot_height, steps)
-    parsed_sequences = parser.parse_df(df, gene = gene)
+    parsed_sequences = parser.parse_df(df, chain=chain, gene = gene)
     sl.draw(parsed_sequences, color_scheme, web = False)
     return sl
 

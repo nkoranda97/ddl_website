@@ -7,7 +7,7 @@ from bokeh.resources import CDN
 
 from .plotting import plot, alignment_viewer
 from .bokeh_logo.logo_generator import generate_logo
-from .utils.ddl import load_project
+from .utils.ddl import load_project, merge_data, lazy_classifier
 from .index import login_required
 from .utils.forms import GeneSelect
 
@@ -133,7 +133,27 @@ def logo(project_id):
 @login_required
 def gene_agg(outer_gene, inner_gene, project_id):
     
+    outer_gene_type = lazy_classifier(outer_gene)
+    inner_gene_type = lazy_classifier(inner_gene)
+    db = get_db()
+    project = db.execute(
+        'SELECT * FROM projects WHERE project_id = ?',
+        (project_id,)
+    ).fetchone()
+    
+    vdj, adata = load_project(project)
+    data = merge_data(vdj)
+    print(data.columns)
+
+    data = data[(data[outer_gene_type] == outer_gene) & (data[inner_gene_type] == inner_gene)]
+    
+    p = generate_logo(data, 'seqlogo', chain='H', color ='proteinClustal', width=16, gene='all') 
+    script, div = components([p])
+        
     return render_template('analyze/agg_gene.html',
                            project_id = project_id,
                            outer_gene = outer_gene,
-                           inner_gene = inner_gene)
+                           inner_gene = inner_gene,
+                           script=script,
+                           div=div,
+                           resources=CDN.render())

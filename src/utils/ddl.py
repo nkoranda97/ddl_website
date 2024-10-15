@@ -2,7 +2,8 @@ import os
 from dotenv import load_dotenv
 import dandelion as ddl
 import scanpy as sc
-
+import pandas as pd
+from collections import defaultdict
 
 def preprocess(upload_folder, samples, data_uploaded, species='human'):
     
@@ -104,7 +105,54 @@ def load_project(project):
         return vdj, adata
     else:
         return vdj, None
+    
+def merge_data(vdj):
+    
+    def merge_dicts(lst):
+        dct = defaultdict(list)
+        for d in lst:
+            for k, v in d.items():
+                dct[k].append(v)
+        return dict(dct)
 
+    data = vdj.data
+    metadata = vdj.metadata
+    data['locus_dict'] = data.apply(lambda row: {row['locus']: row['sequence_alignment']}, axis=1)
+    data = data[['locus_dict']].reset_index()
+    data['sequence_id'] = data['sequence_id'].str.replace(r'_contig_[12]', '', regex=True)
+    data = data.groupby('sequence_id').agg(list).reset_index()
+    data['locus_dict'] = data['locus_dict'].apply(merge_dicts)
+    locus = pd.json_normalize(data['locus_dict'])
+    data= pd.concat([data.drop(columns=['locus_dict']), locus], axis=1)
+    data['IGK'] = data['IGK'].apply(lambda lst: ','.join(lst) if isinstance(lst, list) else lst)
+    data['IGH'] = data['IGH'].apply(lambda lst: ','.join(lst) if isinstance(lst, list) else lst)
+    data['IGL'] = data['IGL'].apply(lambda lst: ','.join(lst) if isinstance(lst, list) else lst)
+    merged = metadata.merge(data, left_on=metadata.index, right_on=data['sequence_id'])
+    merged.drop(['key_0'], axis=1, inplace=True)
+    
+    return merged
+
+def lazy_classifier(gene):
+    gene_type = None
+    if gene.startswith('IGHV'):
+        gene_type = 'v_call_VDJ'
+    elif gene.startswith('IGHD'):
+        gene_type = 'd_call_VDJ'
+    elif gene.startswith('IGHJ'):
+        gene_type = 'j_call_VDJ'
+    elif gene.startswith('IGHG'):
+        gene_type = 'c_call_VDJ'
+    elif gene.startswith('IGKV') or gene.startswith('IGLV'):
+        gene_type = 'v_call_VJ'
+    elif gene.startswith('IGKJ') or gene.startswith('IGLJ'):
+        gene_type = 'j_call_VJ'
+    elif gene.startswith('IGKC') or gene.startswith('IGLC'):
+        gene_type = 'c_call_VJ'
+    return gene_type
+        
 if __name__ == "__main__":
-    print(os.listdir())
-    preprocess('test_input/local', samples=["mosaic_8b"], data_uploaded='VDJ', species='mouse')
+    vdj, _ = load_project({'vdj_path': 'instance/uploads/homotypic/processed_vdj.h5ddl',
+                           'adata_path': 'NULL'})
+    vdj.data.to_csv('~/Desktop/raw.csv')
+    df = merge_data(vdj)
+    df.to_csv('~/Desktop/test.csv')

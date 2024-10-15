@@ -4,7 +4,7 @@ from Bio.Align import MultipleSeqAlignment
 
 
 # This parser requires a file and returns a Seq.
-def parse_df(df, gene):
+def parse_df(df, gene, chain):
 
     sequences = []
 
@@ -13,8 +13,13 @@ def parse_df(df, gene):
     if gene and gene != 'all':
         sequences_dict = df[df['v_call'] == gene][['sequence_id', 'sequence_alignment']].to_dict()['sequence_alignment']
     else:
-        sequences_dict = df[['sequence_id', 'sequence_alignment']].to_dict()['sequence_alignment']    
-        
+        if chain == 'H':
+            sequences_dict = df[['sequence_id', 'IGH']].to_dict()['IGH']    
+        elif chain == 'K':
+            sequences_dict = df[['sequence_id', 'IGK']].to_dict()['IGK']    
+        elif chain == 'L':
+            sequences_dict = df[['sequence_id', 'IGL']].to_dict()['IGL']   
+
     
    
     alignment = [SeqRecord(Seq(value.replace('.', '')).translate(), id=str(key)) for key, value in sequences_dict.items()]
