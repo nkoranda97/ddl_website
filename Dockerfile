@@ -28,4 +28,4 @@ RUN /opt/conda/bin/conda install -c conda-forge mamba -n base --yes && \
 COPY . /app
 
 # Command to run your application
-CMD ["conda", "run", "--no-capture-output", "-n", "bio", "python", "wsgi.py"]
+CMD ["conda", "run", "--no-capture-output", "-n", "bio", "gunicorn", "--bind", "0.0.0.0:8080", "wsgi:app"]
